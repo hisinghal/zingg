@@ -54,7 +54,7 @@ public abstract class Labeller<S,D,R,C,T> extends ZinggBase<S,D,R,C,T> {
 				LOG.warn("No record has been marked yet");
 			} catch (ZinggClientException zce) {
 					LOG.warn("No record has been marked yet");
-			}			
+			}	// Exception catch is wrong , ZinggClient shoule be followed by normal one.		
 			if (markedRecords != null ) {
 				unmarkedRecords = unmarkedRecords.join(markedRecords,ColName.CLUSTER_COLUMN, false,
 						"left_anti");
@@ -65,7 +65,7 @@ public abstract class Labeller<S,D,R,C,T> extends ZinggBase<S,D,R,C,T> {
 		} catch (ZinggClientException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		} // No check for unmarked record Null pointer. and error again is wrong and only warning is set.
 		return unmarkedRecords;
 	}
 
