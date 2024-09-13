@@ -40,9 +40,9 @@ public abstract class Labeller<Source, Destination, Record, Column, Type> extend
 	protected ILabelDataViewHelper<S, D, R, C> labelDataViewHelper;
 
 	public Labeller() {
+		this.trainingDataModel = new TrainingDataModel<S, D, R, C, T>(getContext(), getClientOptions());
+		this.labelDataViewHelper = new LabelDataViewHelper<S, D, R, C, T>(getContext(), getClientOptions());
 		setZinggOption(ZinggOptions.LABEL);
-		trainingDataModel = getTrainingDataModel();
-		labelDataViewHelper = getLabelDataViewHelper();
 	}
 
 	public void execute() throws ZinggClientException {
@@ -51,40 +51,12 @@ public abstract class Labeller<Source, Destination, Record, Column, Type> extend
 			trainingDataModel.setMarkedRecordsStat(getMarkedRecords());
 			ZFrame<D, R, C>  unmarkedRecords = getUnmarkedRecords();
 			ZFrame<D, R, C>  updatedLabelledRecords = processRecordsCli(unmarkedRecords);
-			getTrainingDataModel().writeLabelledOutput(updatedLabelledRecords, args);
+			trainingDataModel.writeLabelledOutput(updatedLabelledRecords, args);
 			LOG.info("Finished labelling phase");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ZinggClientException(e.getMessage());
 		}
 	}
-
-
-	@Override
-	public ITrainingDataModel<S, D, R, C> getTrainingDataModel() {
-		if (trainingDataModel == null) {
-			this.trainingDataModel = new TrainingDataModel<S, D, R, C, T>(getContext(), getClientOptions());
-		}
-		return trainingDataModel;
-	}
-
-	public void setTrainingDataModel(ITrainingDataModel<S, D, R, C> trainingDataModel) {
-		this.trainingDataModel = trainingDataModel;
-	}
-
-	@Override
-	public ILabelDataViewHelper<S, D, R, C> getLabelDataViewHelper() {
-		if (labelDataViewHelper == null) {
-			labelDataViewHelper = new LabelDataViewHelper<S, D, R, C, T>(getContext(), getClientOptions());
-		}
-		return labelDataViewHelper;
-	}
-
-	public void setLabelDataViewHelper(ILabelDataViewHelper<S, D, R, C> labelDataViewHelper) {
-		this.labelDataViewHelper = labelDataViewHelper;
-	}
-
-
-
 }
 
